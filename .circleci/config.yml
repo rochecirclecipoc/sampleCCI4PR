@@ -1,0 +1,40 @@
+version: 2.1
+
+parameters:
+  docker-image:
+    type: string
+    default: "cimg/base:2020.01"
+
+commands:
+  git-pr:
+    description "handles PR creation"
+    steps:
+      - run: checkout
+      - run:
+        command: |
+          set -ex
+          if [[ -n "${CIRCLE_PR_NUMBER}" ]]
+          then
+              FETCH_REFS="${FETCH_REFS} +refs/pull/${CIRCLE_PR_NUMBER}/merge:pr/${CIRCLE_PR_NUMBER}/merge"
+              git fetch -u origin ${FETCH_REFS}
+              git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
+          fi
+          set +x
+jobs:
+  dumb-build:
+    docker:
+      - image: << pipeline.parameters.docker-image >>
+    steps:
+      - git-pr
+      - run:
+          name: "ID itself"
+          command: echo upstream
+      - run:
+          name: "FIXIT: Manipulated failure"
+          command: exit 1
+
+workflows:
+  version: 2
+  Rworkflow:
+    jobs:
+      - dumb-build
