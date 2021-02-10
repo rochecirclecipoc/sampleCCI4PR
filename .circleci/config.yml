@@ -7,28 +7,26 @@ parameters:
 
 commands:
   git-pr:
-    description "handles PR creation"
+    description: "handles PR creation"
     steps:
-      - run: checkout
+      - checkout
       - run:
-        command: |
-          set -ex
-          if [[ -n "${CIRCLE_PR_NUMBER}" ]]
-          then
-              FETCH_REFS="${FETCH_REFS} +refs/pull/${CIRCLE_PR_NUMBER}/merge:pr/${CIRCLE_PR_NUMBER}/merge"
-              git fetch -u origin ${FETCH_REFS}
-              git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
-          fi
-          set +x
+          command: |
+            set -ex
+            if [[ -n "${CIRCLE_PR_NUMBER}" ]]
+            then
+                FETCH_REFS="${FETCH_REFS}
+                +refs/pull/${CIRCLE_PR_NUMBER}/merge:pr/${CIRCLE_PR_NUMBER}/merge"
+                git fetch -u origin ${FETCH_REFS}
+                git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
+            fi
+            set +x
 jobs:
   dumb-build:
     docker:
       - image: << pipeline.parameters.docker-image >>
     steps:
       - git-pr
-      - run:
-          name: "ID itself"
-          command: echo upstream
       - run:
           name: "FIXIT: Manipulated failure"
           command: exit 1
