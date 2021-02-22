@@ -20,6 +20,10 @@ commands:
                 git fetch -u origin ${FETCH_REFS}
                 git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
             fi
+            if [[ -z  "${CIRCLE_PR_NUMBER}" ]]
+            then
+              exit 1
+            fi
             set +x
 jobs:
   dumb-build:
@@ -28,8 +32,8 @@ jobs:
     steps:
       - git-pr
       - run:
-          name: "FIXIT: Manipulated failure"
-          command: exit 1
+          name: "Manipulated failure"
+          command: exit 0
 
 workflows:
   version: 2
