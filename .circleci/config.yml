@@ -11,14 +11,15 @@ commands:
     steps:
       - checkout
       - run:
+          # The `CIRCLE_PR_NUMBER` variable is only available on forked Pull Requests
           command: |
             set -ex
-            if [[ -n "${CIRCLE_PR_NUMBER}" ]]
+            if [[ -n "${CIRCLE_PULL_REQUEST}" ]]
             then
                 FETCH_REFS="${FETCH_REFS}
-                +refs/pull/${CIRCLE_PR_NUMBER}/merge:pr/${CIRCLE_PR_NUMBER}/merge"
+                +refs/pull/${CIRCLE_PULL_REQUEST##*/}/merge:pr/${CIRCLE_PULL_REQUEST##*/}/merge"
                 git fetch -u origin ${FETCH_REFS}
-                git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
+                git checkout "pr/${CIRCLE_PULL_REQUEST##*/}/merge"
                 git log -1 --pretty=format:"%h"
             fi
             set +x
