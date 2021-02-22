@@ -19,6 +19,7 @@ commands:
                 +refs/pull/${CIRCLE_PR_NUMBER}/merge:pr/${CIRCLE_PR_NUMBER}/merge"
                 git fetch -u origin ${FETCH_REFS}
                 git checkout "pr/${CIRCLE_PR_NUMBER}/merge"
+                git log -1 --pretty=format:"%h"
             fi
             set +x
 jobs:
